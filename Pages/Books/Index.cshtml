@@ -1,0 +1,30 @@
+﻿@page
+@model LibraryApp.Pages.Books.IndexModel
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1>Books</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>ISBN</th>
+            <th>Published Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model.Book)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))</td>
+                <td>@book.ISBN</td>
+                <td>@book.PublishedDate.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,55 @@
+﻿@page "{id:int}"
+@model LibraryApp.Pages.Libraries.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Library.Name;
+}
+
+<div class="container mt-4">
+    <h1>@Model.Library.Name</h1>
+    <p>@Model.Library.Address</p>
+
+    <h2>Books</h2>
+    <div class="row">
+        @foreach (var libraryBook in Model.Library.LibraryBooks)
+        {
+            var book = libraryBook.Book;
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="@GetBookImageUrl(book.Title)" class="card-img-top" alt="@book.Title">
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title <small>by @string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name))</small></h5>
+                        <p class="card-text">ISBN: @book.ISBN</p>
+                        <p class="card-text">Published: @book.PublishedDate.ToShortDateString()</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 960px;
+    }
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card-title small {
+        font-size: 0.8em;
+        color: #555;
+    }
+</style>
+
+@functions {
+    private string GetBookImageUrl(string bookTitle)
+    {
+        return bookTitle switch
+        {
+            _ => "https://via.placeholder.com/150" // Varsayılan resim
+        };
+    }
+}

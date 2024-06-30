@@ -1,0 +1,26 @@
+﻿@page
+@model LibraryApp.Pages.Libraries.IndexModel
+
+<h1>Kütüphaneler</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var library in Model.Libraries)
+        {
+            <tr>
+                <td>@library.Name</td>
+                <td>@library.Address</td>
+                <td>
+                    <a asp-page="/Libraries/Details" asp-route-id="@library.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
