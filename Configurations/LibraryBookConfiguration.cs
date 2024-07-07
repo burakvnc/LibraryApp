@@ -8,7 +8,7 @@ namespace LibraryApp.Configurations
     {
         public void Configure(EntityTypeBuilder<LibraryBook> builder)
         {
-            builder.HasKey(lb => new { lb.LibraryId, lb.BookId });
+            builder.HasKey(lb => new { lb.LibraryBookId });
 
             builder.HasOne(lb => lb.Library)
                 .WithMany(l => l.LibraryBooks)

@@ -3,6 +3,7 @@ using LibraryApp.Data;
 using LibraryApp.Models;
 using LibraryApp.DTOs;
 using LibraryApp.Features.CQRS.Commands.BookCommands;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace LibraryApp.Handlers.CommandHandlers
@@ -57,17 +58,27 @@ namespace LibraryApp.Handlers.CommandHandlers
 
         public async Task<BookDto> Handle(BookUpdateCommand request, CancellationToken cancellationToken)
         {
-            var book = await _context.Books.FindAsync(request.Id);
+            var book = await _context.Books
+                .Include(b => b.BookAuthors)
+                .SingleOrDefaultAsync(b => b.Id == request.Id);
+
             if (book == null) return null;
 
             book.Title = request.Title;
             book.ISBN = request.ISBN;
             book.PublishedDate = request.PublishedDate;
 
-            book.BookAuthors.Clear();
+            // Mevcut BookAuthors ilişkilerini kaldır
+            var existingAuthors = book.BookAuthors.ToList();
+            foreach (var existingAuthor in existingAuthors)
+            {
+                _context.BookAuthors.Remove(existingAuthor);
+            }
+
+            // Yeni BookAuthors ilişkilerini ekle
             foreach (var authorId in request.AuthorIds)
             {
-                book.BookAuthors.Add(new BookAuthor { AuthorId = authorId });
+                book.BookAuthors.Add(new BookAuthor { BookId = book.Id, AuthorId = authorId });
             }
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -80,5 +91,6 @@ namespace LibraryApp.Handlers.CommandHandlers
                 PublishedDate = book.PublishedDate
             };
         }
+
     }
 }

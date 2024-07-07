@@ -31,11 +31,9 @@ namespace LibraryApp.Controllers
             return result ? Ok() : NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Book>> UpdateBook(int id, BookUpdateCommand command)
+        [HttpPut]
+        public async Task<ActionResult<Book>> UpdateBook(BookUpdateCommand command)
         {
-            if (id != command.Id) return BadRequest();
-
             var result = await _mediator.Send(command);
             return result != null ? Ok(result) : NotFound();
         }
